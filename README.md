@@ -1,102 +1,106 @@
-🔧 Backend – Nombre del Proyecto
+# Backend Python + PostgreSQL (Render Ready)
 
-Este repositorio contiene la implementación del backend del sistema en dos tecnologías distintas:
+API REST con CRUD de usuarios, ajustada completamente a entorno Python y lista para desplegar en Render.
 
-🟢 Rama node-version → Implementación con Node.js
-🔵 Rama php-version → Implementación con PHP
+## Stack
 
-Cada rama contiene su propia estructura y configuración independiente.
+- Python 3.12
+- Flask
+- PostgreSQL (`psycopg2-binary`)
+- Gunicorn para produccion
+- `python-dotenv` para variables de entorno
 
-👥 Integrantes
+## Estructura
 
-Nombre completo – Código
-Nombre completo – Código
+- `api/app.py`: app Flask
+- `routes/user_routes.py`: rutas `/api/users`
+- `controllers/user_controller.py`: validaciones y respuestas HTTP
+- `models/user_model.py`: consultas SQL
+- `database/db.py`: conexion a PostgreSQL
+- `database/schema.sql`: esquema y datos iniciales
+- `database/init_schema.py`: ejecuta el esquema
+- `render.yaml`: blueprint para Render
 
-🎯 Objetivo del Backend
+## Endpoints
 
-Implementar un servidor capaz de:
+- `GET /api/users` -> listar usuarios
+- `POST /api/users` -> crear usuario
+- `PUT /api/users/:id` -> actualizar usuario
+- `DELETE /api/users/:id` -> eliminar usuario
 
-Gestionar solicitudes HTTP.
-Procesar datos enviados por el cliente.
-Conectarse a una base de datos.
-Implementar operaciones CRUD.
-Retornar respuestas en formato JSON.
+## Ejecutar local
 
+1. Crear y activar entorno virtual:
 
-Estructura del proyecto
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+```
 
-🌿 Estructura de Ramas
-🟢 Rama: node-version
+2. Instalar dependencias:
 
-Backend desarrollado con Node.js sin frameworks.
+```bash
+pip install -r requirements.txt
+```
 
-Ejecución Local
-npm install
-npm start
+3. Crear `.env` desde `.env.example`:
 
-Servidor:
-http://localhost:3000
+```env
+PORT=3000
+DATABASE_URL=postgresql://USER:PASSWORD@HOST:5432/DB_NAME
+PYTHON_VERSION=3.12.3
+```
 
-Despliegue
-Compatible con:
-Render
-Railway
-VPS Node
+4. Inicializar esquema:
 
-Debe usar:
-const PORT = process.env.PORT || 3000;
+```bash
+python database/init_schema.py
+```
 
-🔵 Rama: php-version
+5. Levantar API:
 
-Backend desarrollado con PHP utilizando estructura modular básica.
+```bash
+python api/app.py
+```
 
-Ejecución Local
+Servidor local: `http://localhost:3000`
 
-Si usan servidor embebido de PHP:
+## Despliegue en Render
 
-php -S localhost:8000
+### Opcion 1: Blueprint (`render.yaml`) recomendado
 
-Servidor:
-http://localhost:8000
+1. Sube este repo a GitHub.
+2. En Render: `New +` -> `Blueprint`.
+3. Selecciona el repositorio.
+4. Render creara automaticamente:
+   - servicio web `tecnologias-api` (Python)
+   - base de datos PostgreSQL `tecnologias-db`
+5. Cuando termine el primer deploy, ejecuta una vez en Shell del servicio:
 
-Despliegue
+```bash
+python database/init_schema.py
+```
 
-Compatible con:
+### Opcion 2: Manual
 
-Render (servicio PHP)
-InfinityFree
-Hostinger
-XAMPP (local)
+1. Crear PostgreSQL en Render.
+2. Crear Web Service Python conectado al repo.
+3. Variables:
+   - `DATABASE_URL=<connection string de Postgres en Render>`
+4. Build Command:
 
-📡 Endpoints Implementados
-Método	Ruta	Descripción
-GET	/api/users	Obtener usuarios
-POST	/api/users	Crear usuario
-PUT	/api/users/{id}	Actualizar usuario
-DELETE	/api/users/{id}	Eliminar usuario
-🗄️ Base de Datos
+```bash
+pip install -r requirements.txt
+```
 
-El modelo de base de datos es el mismo para ambas ramas.
+5. Start Command:
 
-Ubicación del script:
+```bash
+gunicorn api.app:app
+```
 
-/database/script.sql
+6. Ejecutar esquema una vez:
 
-
-🔐 Validaciones Implementadas
-
-Campos obligatorios
-Validación de formato email
-Manejo de errores HTTP
-Respuestas en formato JSON
-
-🌍 URLs en Producción
-
-Node:
-
-https://nombre-app-node.onrender.com
-
-
-PHP:
-
-https://nombre-app-php.onrender.com
+```bash
+python database/init_schema.py
+```
