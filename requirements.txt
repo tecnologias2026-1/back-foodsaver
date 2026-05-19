@@ -5,4 +5,4 @@ psycopg2-binary # This line is commented out because psycopg2-binary can cause i
 python-dotenv==1.0.1
 
 # Scrapling requirement
-scrapling[all]>=0.4.7
+scrapling[all]>=0.4.7 # pip install "scrapling[all]"

@@ -76,8 +76,8 @@ def _build_search_urls(search: str) -> list[str]:
     encoded = quote_plus(search.strip())
     return [
         f"https://www.exito.com/s?q={encoded}&sort=price_asc",
-        f"https://www.exito.com/search?q={encoded}",
-        f"https://www.exito.com/buscar?ft={encoded}",
+        # f"https://www.exito.com/search?q={encoded}",
+        # f"https://www.exito.com/buscar?ft={encoded}",
     ]
 
 
@@ -218,7 +218,7 @@ def _extract_products_from_cards(page: Any, base_url: str, limit: int) -> list[d
 
     # Básicamente, busca las cards HTML que representan
     # cada producto dentro de la página de Exito.
-    cards = _css(page, "article[class*='productCard_productCard']")
+    cards = _css(page, "div[class*='ProductWrapper_product-wrapper']") # Cambiar acorde a la pagina a scrapear
     print("Cards encontradas:", len(cards))
 
     # Recorre cada producto encontrado.

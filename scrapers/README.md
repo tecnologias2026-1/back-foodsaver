@@ -19,7 +19,18 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-## 3) Run the scraper
+## 3) Install Playwright browsers
+
+This scraper uses `StealthyFetcher` for dynamic JavaScript rendering.
+
+Install Playwright browsers with:
+
+```powershell
+python -m playwright install
+```
+
+
+## 4) Run the scraper
 
 ```powershell
 python sample_scrapling.py
