@@ -343,8 +343,15 @@ def scrape_exito(
                 "script[type='application/ld+json']::text",
             ).getall()
 
+            if not raw_json_blocks:
+                print("No se encontró ningún bloque JSON-LD")
+            else:
+                print(f"Se encontraron {len(raw_json_blocks)} bloques JSON-LD")
+
             products = _extract_products_from_jsonld(raw_json_blocks)
 
+            print(f"Productos encontrados desde JSON-LD: {len(products)}")
+            
             # Segunda estrategia: si JSON-LD no encontró productos,
             # busca las cards visibles del HTML, como los <article> de productos.
             if not products:
