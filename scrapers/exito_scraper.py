@@ -273,7 +273,7 @@ def _extract_products_from_cards(
             or ""
         ).strip() or None
 
-        quantity, unit = extract_quantity(name or "")
+        quantity, unit, clean_name = extract_quantity(name or "")
 
         image = _css(card, "img::attr(src)").get()
         seller = _css(card, "[data-fs-product-details-seller__name]::text").get()
@@ -301,7 +301,7 @@ def _extract_products_from_cards(
 
         products.append(
             {
-                "name": name,
+                "name": clean_name,
                 "url": absolute_url,
                 "image": image,
                 "seller": seller.strip() if isinstance(seller, str) else None,
