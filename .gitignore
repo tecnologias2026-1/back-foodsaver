@@ -1,0 +1,15 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environment
+.venv/
+
+# VS Code
+.vscode/
+
+# Environment variables
+# .env
+
+# JSON outputs
+# data/*.json

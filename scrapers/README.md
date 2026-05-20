@@ -39,13 +39,13 @@ python sample_scrapling.py
 Search for a specific product (example: banano):
 
 ```powershell
-python sample_scrapling.py --search banano
+python -m scrapers.exito_scraper --search arroz
 ```
 
 Control number of results:
 
 ```powershell
-python sample_scrapling.py --search banano --max-items 30
+python -m scrapers.exito_scraper --search arroz --max-items 30
 ```
 
 Expected output:

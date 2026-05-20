@@ -5,9 +5,11 @@
     "image": "https://d3ez54m90carx6.cloudfront.net/CUCARDA-INSUPERABLE-2rz15omd91zwoz.png",
     "seller": "Vendido por:",
     "price": "1.310",
+    "quantity": "454",
+    "unit": "G",
     "original_price": null,
     "discount_percent": null,
-    "source": "html-card"
+    "source": "html-card-exito"
   },
   {
     "name": "Cereal CAROLINA arroz achocolatado (70  gr)",
@@ -15,9 +17,11 @@
     "image": "https://exitocol.vtexassets.com/arquivos/ids/33173276-300-auto/Cereal-Arroz-Achocolatado-CAROLINA-70-gr-3353530_a.jpg?v=639124909822530000",
     "seller": "Vendido por:",
     "price": "1.350",
+    "quantity": "70",
+    "unit": "G",
     "original_price": null,
     "discount_percent": null,
-    "source": "html-card"
+    "source": "html-card-exito"
   },
   {
     "name": "Maíz FRESCAMPO blanco (500  gr)",
@@ -25,8 +29,94 @@
     "image": "https://d3ez54m90carx6.cloudfront.net/CUCARDA-INSUPERABLE-2rz15omd91zwoz.png",
     "seller": "Vendido por:",
     "price": "1.390",
+    "quantity": "500",
+    "unit": "G",
     "original_price": null,
     "discount_percent": null,
-    "source": "html-card"
+    "source": "html-card-exito"
+  },
+  {
+    "name": "Arroz FRESCAMPO blanco (454  gr)",
+    "url": "https://www.exito.com/arroz-blanco-frescampo-454-gr-3064268/p",
+    "image": "https://d3ez54m90carx6.cloudfront.net/CUCARDA-INSUPERABLE-2rz15omd91zwoz.png",
+    "seller": "Vendido por:",
+    "price": "1.400",
+    "quantity": "454",
+    "unit": "G",
+    "original_price": null,
+    "discount_percent": null,
+    "source": "html-card-exito"
+  },
+  {
+    "name": "Maíz FRESCAMPO cáscara (500  gr)",
+    "url": "https://www.exito.com/maiz-cascara-amarillo-x-500-gr-857002/p",
+    "image": "https://exitocol.vtexassets.com/arquivos/ids/29471628-300-auto/Maiz-Cascara-Amarillo-X-500-gr-1165840_a.jpg?v=638894980853570000",
+    "seller": "Vendido por:",
+    "price": "1.500",
+    "quantity": "500",
+    "unit": "G",
+    "original_price": "1.680",
+    "discount_percent": "10",
+    "source": "html-card-exito"
+  },
+  {
+    "name": "Arroz EXITO MARCA PROPIA blanco (500  gr)",
+    "url": "https://www.exito.com/arroz-blanco-exito-marca-propia-500-gr-3064267/p",
+    "image": "https://d3ez54m90carx6.cloudfront.net/CUCARDA-INSUPERABLE-2rz15omd91zwoz.png",
+    "seller": "Vendido por:",
+    "price": "1.550",
+    "quantity": "500",
+    "unit": "G",
+    "original_price": null,
+    "discount_percent": null,
+    "source": "html-card-exito"
+  },
+  {
+    "name": "Claro LA ANTIOQUENA de maíz (300  gr)",
+    "url": "https://www.exito.com/claro-de-maiz-300-gr-216242/p",
+    "image": "https://exitocol.vtexassets.com/arquivos/ids/29471617-300-auto/Claro-De-Maiz-300-gr-972030_a.jpg?v=638894980746130000",
+    "seller": "Vendido por:",
+    "price": "1.700",
+    "quantity": "300",
+    "unit": "G",
+    "original_price": null,
+    "discount_percent": null,
+    "source": "html-card-exito"
+  },
+  {
+    "name": "Arroz GOLONDRINA blanco (450  gr)",
+    "url": "https://www.exito.com/arroz-golondrina-blanco-450-gr-3193795/p",
+    "image": "https://exitocol.vtexassets.com/arquivos/ids/33161856-300-auto/Arroz-GOLONDRINA-Blanco-450-gr-3630104_a.jpg?v=639124053941530000",
+    "seller": "Vendido por:",
+    "price": "1.760",
+    "quantity": "450",
+    "unit": "G",
+    "original_price": null,
+    "discount_percent": null,
+    "source": "html-card-exito"
+  },
+  {
+    "name": "Arroz SUPREMO blanco (450  gr)",
+    "url": "https://www.exito.com/arroz-supremo-supremo-arroz-blanco-450-gr-3189134/p",
+    "image": "https://exitocol.vtexassets.com/arquivos/ids/33161847-300-auto/Arroz-Supremo-SUPREMO-Arroz-Blanco-450-gr-3616672_a.jpg?v=639124053899670000",
+    "seller": "Vendido por:",
+    "price": "1.800",
+    "quantity": "450",
+    "unit": "G",
+    "original_price": null,
+    "discount_percent": null,
+    "source": "html-card-exito"
+  },
+  {
+    "name": "Maíz FRESCAMPO pira (500  gr)",
+    "url": "https://www.exito.com/maiz-pira-x-500-gr-856999/p",
+    "image": "https://d3ez54m90carx6.cloudfront.net/CUCARDA-INSUPERABLE-2rz15omd91zwoz.png",
+    "seller": "Vendido por:",
+    "price": "1.850",
+    "quantity": "500",
+    "unit": "G",
+    "original_price": "1.900",
+    "discount_percent": null,
+    "source": "html-card-exito"
   }
 ]
