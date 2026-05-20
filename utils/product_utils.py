@@ -20,31 +20,24 @@ import re
 # Resultado:
 # ("2000", "GRS")
 
-def extract_quantity(name: str) -> tuple[str | None, str | None]:
+def extract_quantity(name: str) -> tuple[str | None, str | None, str]:
 
     # Si el nombre viene vacío, no hay nada que extraer.
     if not name:
-        return None, None
+        return None, None, name
 
-    # Busca:
-    # - uno o más números
-    # - opcionalmente con decimal
-    # - seguidos de unidades como GRS, KG, ML, etc.
-    #
-    # Ejemplos válidos:
-    # 2000 GRS
-    # 1 KG
-    # 500 ML
+    # Regex reutilizable
+    pattern = r"(?:x\s*)?\(?\s*(\d+(?:[.,]\d+)?)\s*(GRS|GR|KG|ML|G|L)\s*\)?"
 
     match = re.search(
-        r"(\d+(?:[.,]\d+)?)\s*(GRS|G|GR|KG|ML|L)",
+        pattern,
         name.upper()
     )
 
     # Si no encuentra coincidencias,
     # devuelve valores vacíos.
     if not match:
-        return None, None
+        return None, None, name
 
     # Primer grupo:
     # cantidad numérica.
@@ -54,4 +47,15 @@ def extract_quantity(name: str) -> tuple[str | None, str | None]:
     # unidad encontrada.
     unit = match.group(2)
 
-    return amount, unit
+    # Elimina el gramaje del nombre
+    clean_name = re.sub(
+        pattern,
+        "",
+        name,
+        flags=re.IGNORECASE
+    )
+
+    # Limpia espacios sobrantes
+    clean_name = " ".join(clean_name.split())
+
+    return amount, unit, clean_name
