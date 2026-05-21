@@ -1,6 +1,5 @@
 import re
 
-
 # Extrae el gramaje o cantidad desde el nombre del producto.
 #
 # Básicamente, busca patrones como:

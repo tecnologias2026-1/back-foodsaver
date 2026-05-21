@@ -1,0 +1,38 @@
+[
+  {
+    "name": "Arroz Máxima Blanco",
+    "url": "https://www.jumbocolombia.com/arroz-maxima-blanco-x500grs-3650926/p",
+    "image": "https://jumbocolombiaio.vtexassets.com/arquivos/ids/708399/7703616323091-1.jpg?v=638699768793800000",
+    "seller": "Jumbo",
+    "price": 1890,
+    "quantity": "500",
+    "unit": "GRS",
+    "original_price": null,
+    "discount_percent": null,
+    "source": "json-ld-jumbo"
+  },
+  {
+    "name": "Arroz Diana Blanco",
+    "url": "https://www.jumbocolombia.com/arroz-diana-blanco-500g-28204/p",
+    "image": "https://jumbocolombiaio.vtexassets.com/arquivos/ids/400435/7702511000014.jpg?v=637962799114230000",
+    "seller": "Jumbo",
+    "price": 2100,
+    "quantity": "500",
+    "unit": "G",
+    "original_price": null,
+    "discount_percent": null,
+    "source": "json-ld-jumbo"
+  },
+  {
+    "name": "Arroz Cerearroz para sopa",
+    "url": "https://www.jumbocolombia.com/arroz-para-sopa-cerearroz-x-500-g/p",
+    "image": "https://jumbocolombiaio.vtexassets.com/arquivos/ids/186312/7702231100018-1.jpg?v=637813981817230000",
+    "seller": "Jumbo",
+    "price": 2100,
+    "quantity": "500",
+    "unit": "G",
+    "original_price": null,
+    "discount_percent": null,
+    "source": "json-ld-jumbo"
+  }
+]

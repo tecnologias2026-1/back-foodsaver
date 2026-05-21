@@ -14,37 +14,26 @@ from utils.scraper_utils import (
 )
 
 
-# Página a scrapear
-TARGET_URL = "https://www.exito.com/"
+TARGET_URL = "https://www.jumbocolombia.com/"
 
 
-# Recibe un término de búsqueda, lo codifica para URL
-# y genera varias URLs de búsqueda en Exito que podrían contener
-# los productos relacionados con ese término.
 def _build_search_urls(search: str) -> list[str]:
-    # Convierte el texto de búsqueda a un formato que pueda usarse
-    # dentro de una URL.
     encoded = quote_plus(search.strip())
 
     return [
-        f"https://www.exito.com/s?q={encoded}&sort=price_asc",
-        f"https://www.exito.com/search?q={encoded}",
-        f"https://www.exito.com/buscar?ft={encoded}",
+        f"https://www.jumbocolombia.com/{encoded}?_q={encoded}&map=ft&order=OrderByPriceASC",
     ]
 
 
-# Intenta recuperar al menos
-# los links de productos encontrados en la página.
 def _extract_product_links_from_html(
     page: Any,
     base_url: str,
     limit: int,
 ) -> list[dict[str, Any]]:
-    
     fallback_products: list[dict[str, Any]] = []
     seen_urls: set[str] = set()
 
-    for link in css(page, "a[href*='/p/']"):
+    for link in css(page, "a[class*='clearLink'][href*='/p']"):
         href = css(link, "::attr(href)").get()
 
         if not href:
@@ -58,7 +47,8 @@ def _extract_product_links_from_html(
         seen_urls.add(absolute_url)
 
         title = (
-            css(link, "::attr(title)").get()
+            css(link, "::attr(aria-label)").get()
+            or css(link, "::attr(title)").get()
             or css(link, "::text").get()
             or ""
         ).strip()
@@ -66,16 +56,15 @@ def _extract_product_links_from_html(
         fallback_products.append(
             {
                 "name": title or None,
-                "brand": None,
                 "url": absolute_url,
                 "image": None,
-                "seller": "Exito",
+                "seller": "Jumbo",
                 "price": None,
                 "quantity": None,
                 "unit": None,
                 "original_price": None,
                 "discount_percent": None,
-                "source": "html-link-exito",
+                "source": "html-link-jumbo",
             }
         )
 
@@ -85,23 +74,19 @@ def _extract_product_links_from_html(
     return fallback_products
 
 
-# Extrae productos de las cards visibles del HTML
 def _extract_products_from_cards(
     page: Any,
     base_url: str,
     limit: int,
 ) -> list[dict[str, Any]]:
-    
     products: list[dict[str, Any]] = []
     seen_urls: set[str] = set()
 
-    # Busca todos los <article> que tengan una clase que
-    # contenga: productCard_productCard.
-    cards = css(page, "article[class*='productCard_productCard']")
+    cards = css(page, "a[class*='clearLink'][href*='/p']")
     print("Cards encontradas:", len(cards))
 
     for card in cards:
-        href = css(card, "a[data-testid='product-link']::attr(href)").get()
+        href = css(card, "::attr(href)").get()
 
         if not href:
             continue
@@ -114,36 +99,31 @@ def _extract_products_from_cards(
         seen_urls.add(absolute_url)
 
         name = (
-            css(card, "h3::text").get()
+            css(card, "span[class*='brandName']::text").get()
             or css(card, "img::attr(alt)").get()
             or ""
         ).strip() or None
 
         quantity, unit, clean_name = extract_quantity(name or "")
 
-        image = css(card,
-            "a[data-testid='product-link'] img::attr(src)"
+        image = css(
+            card,
+            "img[class*='-image']::attr(src)",
         ).get()
 
         current_price_text = css(
             card,
-            "p[data-fs-container-price-otros='true']::text",
+            "#items-price div[class*='-price']::text",
         ).get()
-
-        if not current_price_text:
-            current_price_text = css(
-                card,
-                "[data-fs-container-price-otros='true']::text",
-            ).get()
 
         original_price_text = css(
             card,
-            "p[class*='price-dashed']::text",
+            "div[class*='cencoPriceWithoutDiscount'] div[class*='-price']::text",
         ).get()
 
         discount_text = css(
             card,
-            "span[data-percentage='true']::text",
+            "span[class*='containerPercentageFlag']::text",
         ).get()
 
         products.append(
@@ -151,13 +131,13 @@ def _extract_products_from_cards(
                 "name": clean_name,
                 "url": absolute_url,
                 "image": image,
-                "seller": "Exito",
+                "seller": "Jumbo",
                 "price": extract_first_number(current_price_text),
                 "quantity": quantity,
                 "unit": unit,
                 "original_price": extract_first_number(original_price_text),
                 "discount_percent": extract_first_number(discount_text),
-                "source": "html-card-exito",
+                "source": "html-card-jumbo",
             }
         )
 
@@ -167,11 +147,11 @@ def _extract_products_from_cards(
     return products
 
 
-def scrape_exito(
+def scrape_jumbo(
     search: str | None = None,
     max_items: int = 20,
 ) -> tuple[list[dict[str, Any]], str]:
-    """Scrape Exito products; optionally target search result pages."""
+    """Scrape Jumbo products; optionally target search result pages."""
 
     urls = _build_search_urls(search) if search else [TARGET_URL]
 
@@ -179,8 +159,6 @@ def scrape_exito(
         pages = get_candidate_pages(url)
 
         for page in pages:
-            
-            # Con JSON-LD primero
             raw_json_blocks = css(
                 page,
                 "script[type='application/ld+json']::text",
@@ -192,15 +170,13 @@ def scrape_exito(
                 print(f"Se encontraron {len(raw_json_blocks)} bloques JSON-LD")
 
             products = extract_products_from_jsonld(
-                raw_json_blocks, 
-                seller="Exito", 
-                source="json-ld-exito"
+                raw_json_blocks,
+                seller="Jumbo",
+                source="json-ld-jumbo",
             )
 
             print(f"Productos encontrados desde JSON-LD: {len(products)}")
-            
 
-            # Busca las cards visibles del HTML, como los <article> de productos.
             if not products:
                 products = _extract_products_from_cards(
                     page,
@@ -208,8 +184,6 @@ def scrape_exito(
                     limit=max_items,
                 )
 
-
-            # Rescata al menos links de productos, aunque tengan menos información.
             if not products:
                 products = _extract_product_links_from_html(
                     page,
@@ -220,17 +194,21 @@ def scrape_exito(
             if products:
                 return products[:max_items], url
 
-    raise RuntimeError("Could not extract products from Exito with the current strategy")
+    raise RuntimeError(
+        "Could not extract products from Jumbo with the current strategy"
+    )
 
 
 def _parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Scrape products from exito.com")
+    parser = argparse.ArgumentParser(
+        description="Scrape products from jumbocolombia.com"
+    )
 
     parser.add_argument(
         "--search",
         type=str,
         default=None,
-        help="Product keyword to search, for example: banano",
+        help="Product keyword to search, for example: arroz",
     )
 
     parser.add_argument(
@@ -243,17 +221,10 @@ def _parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-# Ejecuta el scraper usando los parámetros recibidos
-# desde terminal, guarda los productos encontrados
-# en un archivo JSON y muestra el resultado por consola.
-#
-# Ejemplo de ejecución:
-#
-# python -m scrapers.exito_scraper --search arroz --max-items 3
 def main() -> None:
     args = _parse_args()
 
-    data, source_url = scrape_exito(
+    data, source_url = scrape_jumbo(
         search=args.search,
         max_items=args.max_items,
     )
@@ -262,12 +233,17 @@ def main() -> None:
 
     if args.search:
         slug = "_".join(args.search.lower().split())
-        output_file = f"data/exito_{slug}_products.json"  # Para cambiar la ruta de salida, modificar esta línea.
+        output_file = f"data/jumbo_{slug}_products.json"
     else:
-        output_file = "data/exito_products.json"
+        output_file = "data/jumbo_products.json"
 
     with open(output_file, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
+        json.dump(
+            data,
+            f,
+            indent=2,
+            ensure_ascii=False,
+        )
 
     print(f"Saved data to {output_file}")
 
