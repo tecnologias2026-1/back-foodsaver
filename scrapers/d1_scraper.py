@@ -2,91 +2,29 @@ from __future__ import annotations
 
 import argparse
 import json
-import re
 from typing import Any
 from urllib.parse import quote_plus, urljoin
 
-from scrapling.fetchers import Fetcher, StealthyFetcher
+from utils.jsonld_utils import extract_products_from_jsonld
 from utils.product_utils import extract_quantity
+from utils.scraper_utils import (
+    css,
+    extract_first_number,
+    get_candidate_pages,
+)
 
 
-# Página a scrapear
 TARGET_URL = "https://d1.com.co/"
 
-StealthyFetcher.adaptive = True
 
-
-def _css(node: Any, selector: str) -> Any:
-    return node.css(selector)
-
-
-# Básicamente, intenta abrir la página usando dos métodos:
-# uno más avanzado para páginas dinámicas y otro más simple
-# por si el primero falla.
-def _get_candidate_pages(url: str) -> list[Any]:
-    pages: list[Any] = []
-
-    try:
-        # Primer intento: usa StealthyFetcher para abrir la página como si fuera
-        # un navegador real. Esto ayuda cuando los productos se cargan con JavaScript.
-        stealth_page = StealthyFetcher.fetch(
-            url,
-            headless=True,
-            network_idle=True,
-            adaptive=True,
-        )
-
-        if getattr(stealth_page, "status", 200) == 200:
-            pages.append(stealth_page)
-
-    except Exception:
-        pass
-
-    try:
-        # Segundo intento: usa Fetcher para traer el HTML directamente.
-        # Es más rápido, pero puede fallar si la página depende mucho de JavaScript.
-        static_page = Fetcher.get(url)
-
-        if getattr(static_page, "status", 0) == 200:
-            pages.append(static_page)
-
-    except Exception:
-        pass
-
-    return pages
-
-
-# Extrae el primer número encontrado en un texto.
-# Se usa para limpiar precios obtenidos del HTML.
-#
-# Ejemplo:
-# "$ 7.450" -> "7.450"
-def _extract_first_number(value: str | None) -> str | None:
-    if not value:
-        return None
-
-    match = re.search(r"\d[\d\.,]*", value)
-
-    return match.group(0) if match else None
-
-
-# Construye URLs de búsqueda para D1.
-#
-# Convierte el texto ingresado por el usuario
-# a un formato válido para URL.
-#
-# Ejemplo:
-# "arveja verde" -> "arveja+verde"
 def _build_search_urls(search: str) -> list[str]:
     encoded = quote_plus(search.strip())
 
     return [
-        f"https://domicilios.tiendasd1.com/search?name={encoded}",
+        f"https://domicilios.tiendasd1.com/search?name={encoded}&sort=3",
     ]
 
 
-# Filtra únicamente los bloques cuyo "@type"
-# sea "Product" para trabajar solo con productos válidos.
 def _extract_product_links_from_html(
     page: Any,
     base_url: str,
@@ -95,8 +33,8 @@ def _extract_product_links_from_html(
     fallback_products: list[dict[str, Any]] = []
     seen_urls: set[str] = set()
 
-    for link in _css(page, "a.containerCard"):
-        href = _css(link, "::attr(href)").get()
+    for link in css(page, "a.containerCard"):
+        href = css(link, "::attr(href)").get()
 
         if not href:
             continue
@@ -109,8 +47,8 @@ def _extract_product_links_from_html(
         seen_urls.add(absolute_url)
 
         title = (
-            _css(link, "h3[data-testid='card-name']::text").get()
-            or _css(link, "img::attr(alt)").get()
+            css(link, "h3[data-testid='card-name']::text").get()
+            or css(link, "img::attr(alt)").get()
             or ""
         ).strip()
 
@@ -118,7 +56,14 @@ def _extract_product_links_from_html(
             {
                 "name": title or None,
                 "url": absolute_url,
-                "source": "html-link",
+                "image": None,
+                "seller": "D1",
+                "price": None,
+                "quantity": None,
+                "unit": None,
+                "original_price": None,
+                "discount_percent": None,
+                "source": "html-link-d1",
             }
         )
 
@@ -128,7 +73,6 @@ def _extract_product_links_from_html(
     return fallback_products
 
 
-# Extrae productos desde las cards HTML visibles de D1.
 def _extract_products_from_cards(
     page: Any,
     base_url: str,
@@ -137,16 +81,11 @@ def _extract_products_from_cards(
     products: list[dict[str, Any]] = []
     seen_urls: set[str] = set()
 
-    # Básicamente, busca las cards HTML que representan
-    # cada producto dentro de la página de D1.
-    cards = _css(page, "div[class*='ProductWrapper_product-wrapper']")
+    cards = css(page, "div[class*='ProductWrapper_product-wrapper']")
     print("Cards encontradas:", len(cards))
 
-    # Recorre cada producto encontrado.
-    # Cada card representa 1 producto.
     for card in cards:
-        # Extrae el link del producto.
-        href = _css(card, "a.containerCard::attr(href)").get()
+        href = css(card, "a.containerCard::attr(href)").get()
 
         if not href:
             continue
@@ -158,20 +97,20 @@ def _extract_products_from_cards(
 
         seen_urls.add(absolute_url)
 
-        # Extrae nombre del producto.
         name = (
-            _css(card, "h3[data-testid='card-name']::text").get()
-            or _css(card, "img::attr(alt)").get()
+            css(card, "h3[data-testid='card-name']::text").get()
+            or css(card, "img::attr(alt)").get()
             or ""
         ).strip() or None
 
         quantity, unit, clean_name = extract_quantity(name or "")
 
-        # Extrae imagen.
-        image = _css(card, "img::attr(src)").get()
+        image = css(
+            card,
+            "img[class*='prod__figure__img']::attr(src)",
+        ).get()
 
-        # Extrae precio actual.
-        current_price_text = _css(
+        current_price_text = css(
             card,
             "p[data-testid='card-base-price']::text",
         ).get()
@@ -182,10 +121,10 @@ def _extract_products_from_cards(
                 "url": absolute_url,
                 "image": image,
                 "seller": "D1",
-                "price": _extract_first_number(current_price_text),
+                "price": extract_first_number(current_price_text),
                 "quantity": quantity,
                 "unit": unit,
-                "original_price": _extract_first_number(current_price_text),
+                "original_price": None,
                 "discount_percent": None,
                 "source": "html-card-d1",
             }
@@ -197,32 +136,43 @@ def _extract_products_from_cards(
     return products
 
 
-# Intenta varias estrategias hasta encontrar productos válidos.
 def scrape_d1(
     search: str | None = None,
     max_items: int = 20,
 ) -> tuple[list[dict[str, Any]], str]:
-
-    # Función principal:
-    # recibe una búsqueda como "arroz" o "banano",
-    # prueba URLs de D1 y devuelve productos encontrados.
+    """Scrape D1 products; optionally target search result pages."""
+    
     urls = _build_search_urls(search) if search else [TARGET_URL]
 
     for url in urls:
-        pages = _get_candidate_pages(url)
+        pages = get_candidate_pages(url)
 
         for page in pages:
-            # Primera estrategia:
-            # intenta extraer productos desde las cards HTML.
-            products = _extract_products_from_cards(
+            raw_json_blocks = css(
                 page,
-                url,
-                limit=max_items,
+                "script[type='application/ld+json']::text",
+            ).getall()
+
+            if not raw_json_blocks:
+                print("No se encontró ningún bloque JSON-LD")
+            else:
+                print(f"Se encontraron {len(raw_json_blocks)} bloques JSON-LD")
+
+            products = extract_products_from_jsonld(
+                raw_json_blocks,
+                seller="D1",
+                source="json-ld-d1",
             )
 
-            # Segunda estrategia:
-            # si no encontró cards completas,
-            # intenta rescatar links de productos.
+            print(f"Productos encontrados desde JSON-LD: {len(products)}")
+
+            if not products:
+                products = _extract_products_from_cards(
+                    page,
+                    url,
+                    limit=max_items,
+                )
+
             if not products:
                 products = _extract_product_links_from_html(
                     page,
@@ -260,13 +210,6 @@ def _parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-# Ejecuta el scraper usando los parámetros recibidos
-# desde terminal, guarda los productos encontrados
-# en un archivo JSON y muestra el resultado por consola.
-#
-# Ejemplo:
-#
-# python -m scrapers.d1_scraper --search arroz --max-items 3
 def main() -> None:
     args = _parse_args()
 

@@ -13,6 +13,7 @@ from models.ingredient_model import (
 
 def validate_payload(data):
     nombre = str(data.get("nombre", "")).strip()
+    imagen = str(data.get("imagen", "")).strip()
     precio = data.get("precio")
     tienda = str(data.get("tienda", "")).strip()
     url = str(data.get("url", "")).strip()
@@ -22,6 +23,7 @@ def validate_payload(data):
 
     return {
         "nombre": nombre,
+        "imagen": imagen,
         "precio": precio,
         "tienda": tienda,
         "url": url,
@@ -41,6 +43,7 @@ def create_ingredient_handler():
 
     new_ingredient = create_ingredient(
         payload["nombre"],
+        payload["imagen"],
         payload["precio"],
         payload["tienda"],
         payload["url"],
@@ -61,6 +64,7 @@ def update_ingredient_handler(ingredient_id: int):
     updated = update_ingredient(
         ingredient_id,
         payload["nombre"],
+        payload["imagen"],
         payload["precio"],
         payload["tienda"],
         payload["url"],
