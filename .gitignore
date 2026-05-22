@@ -9,7 +9,7 @@ __pycache__/
 .vscode/
 
 # Environment variables
-# .env
+.env
 
 # JSON outputs
 # data/*.json

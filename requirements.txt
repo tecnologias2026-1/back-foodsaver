@@ -1,7 +1,6 @@
 Flask==3.0.3
 gunicorn==22.0.0
-psycopg2-binary # This line is commented out because psycopg2-binary can cause issues in production environments. It's recommended to use psycopg2 instead for production. If you want to use psycopg2, you can uncomment this line and install it with pip.
-# psycopg2-binary==2.9.9
+psycopg2-binary==2.9.9
 python-dotenv==1.0.1
 
 # Scrapling requirement
