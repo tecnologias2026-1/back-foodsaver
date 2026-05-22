@@ -1,7 +1,7 @@
 import os
 
-import psycopg2
-from psycopg2.extras import RealDictCursor
+import psycopg
+from psycopg.rows import dict_row
 
 
 def get_connection():
@@ -9,4 +9,4 @@ def get_connection():
     if not database_url:
         raise RuntimeError("DATABASE_URL is not configured")
 
-    return psycopg2.connect(database_url, cursor_factory=RealDictCursor)
+    return psycopg.connect(database_url, row_factory=dict_row)

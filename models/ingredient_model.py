@@ -1,6 +1,6 @@
 # import email
 
-from psycopg2 import errors
+from psycopg import errors
 
 from database.db import get_connection
 
