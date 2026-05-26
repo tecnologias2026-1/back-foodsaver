@@ -10,7 +10,6 @@ from controllers.ingredient_controller import (
 
 ingredient_bp = Blueprint("ingredients", __name__)
 
-
 ingredient_bp.get("/")(list_ingredients)
 ingredient_bp.post("/")(create_ingredient_handler)
 ingredient_bp.put("/<int:ingredient_id>")(update_ingredient_handler)
