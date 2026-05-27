@@ -8,14 +8,14 @@ from pathlib import Path
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
 INGREDIENTS = [
-    "habichuela",
-    "arroz",
-    "pimenton",
-    "cebolla",
-    "pechuga",
-    "arveja",
-    "condimento",
-    "ajo",
+    {"ingredient": "habichuela", "search": "habichuela"},
+    {"ingredient": "arroz", "search": "arroz blanco"},
+    {"ingredient": "pimenton", "search": "pimenton"},
+    {"ingredient": "cebolla", "search": "cebolla"},
+    {"ingredient": "pechuga", "search": "pechuga pollo"},
+    {"ingredient": "arveja", "search": "arveja"},
+    {"ingredient": "condimento", "search": "condimento completo"},
+    {"ingredient": "ajo", "search": "ajo malla"},
 ]
 SCRAPERS = [
     "scrapers.d1_scraper",
@@ -60,8 +60,11 @@ def main() -> None:
     print("Iniciando actualización centralizada de productos...")
     print(f"Directorio raíz: {ROOT_DIR}")
 
-    for ingredient in INGREDIENTS:
-        print(f"\nProcesando ingrediente: {ingredient}")
+    for item in INGREDIENTS:
+        ingredient = item["ingredient"]
+        search = item["search"]
+
+        print(f"\nProcesando ingrediente: {ingredient} | búsqueda: {search}")
 
         for scraper in SCRAPERS:
             run_command(
@@ -70,11 +73,13 @@ def main() -> None:
                     "-m",
                     scraper,
                     "--search",
+                    search,
+                    "--ingredient",
                     ingredient,
                     "--max-items",
                     "5",
                 ],
-                f"Ejecutando {scraper} para {ingredient}",
+                f"Ejecutando {scraper} para {ingredient} ({search})",
             )
 
     import_result = run_command(

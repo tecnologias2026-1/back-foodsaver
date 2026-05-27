@@ -5,8 +5,10 @@ CREATE TABLE IF NOT EXISTS public.ingredientes_scraper (
   imagen TEXT,
   precio NUMERIC NOT NULL,
   tienda TEXT NOT NULL,
-  url TEXT NOT NULL UNIQUE,
-  ingrediente TEXT,
+  url TEXT NOT NULL,
+  ingrediente TEXT NOT NULL,
+
+  CONSTRAINT ingredientes_scraper_ingrediente_tienda_key UNIQUE (ingrediente, tienda),
 
   fecha TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );

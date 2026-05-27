@@ -201,6 +201,13 @@ def _parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
+        "--ingredient",
+        type=str,
+        default=None,
+        help="Clean ingredient category to store in the JSON output",
+    )
+
+    parser.add_argument(
         "--max-items",
         type=int,
         default=5,
@@ -212,6 +219,7 @@ def _parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = _parse_args()
+    ingredient = (args.ingredient or args.search or "").strip() or None
 
     data, source_url = scrape_d1(
         search=args.search,
@@ -220,7 +228,14 @@ def main() -> None:
 
     print(f"Collected {len(data)} product records from {source_url}")
 
-    if args.search:
+    if ingredient:
+        for product in data:
+            product["ingredient"] = ingredient
+
+    if ingredient:
+        slug = "_".join(ingredient.lower().split())
+        output_file = f"data/d1_{slug}_products.json"
+    elif args.search:
         slug = "_".join(args.search.lower().split())
         output_file = f"data/d1_{slug}_products.json"
     else:

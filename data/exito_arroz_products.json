@@ -14,13 +14,13 @@
   {
     "name": "Cereal CAROLINA arroz achocolatado",
     "url": "https://www.exito.com/cereal-arroz-achocolatado-carolina-70-gr-3113117/p",
-    "image": "https://exitocol.vtexassets.com/arquivos/ids/33173276-300-auto/Cereal-Arroz-Achocolatado-CAROLINA-70-gr-3353530_a.jpg?v=639124909822530000",
+    "image": "https://exitocol.vtexassets.com/arquivos/ids/33549897-300-auto/Cereal-Arroz-Achocolatado-CAROLINA-70-gr-3353530_a.jpg?v=639154849842770000",
     "seller": "Exito",
     "price": "1.350",
     "quantity": "70",
     "unit": "GR",
     "original_price": null,
-    "discount_percent": null,
+    "discount_percent": "10",
     "source": "html-card-exito"
   },
   {
@@ -50,7 +50,7 @@
   {
     "name": "Maíz FRESCAMPO cáscara",
     "url": "https://www.exito.com/maiz-cascara-amarillo-x-500-gr-857002/p",
-    "image": "https://exitocol.vtexassets.com/arquivos/ids/29471628-300-auto/Maiz-Cascara-Amarillo-X-500-gr-1165840_a.jpg?v=638894980853570000",
+    "image": "https://exitocol.vtexassets.com/arquivos/ids/33535786-300-auto/Maiz-Cascara-Amarillo-X-500-gr-1165840_a.jpg?v=639154388456330000",
     "seller": "Exito",
     "price": "1.500",
     "quantity": "500",
