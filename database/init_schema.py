@@ -1,6 +1,10 @@
 import pathlib
+import sys
 
 from dotenv import load_dotenv
+
+BASE_DIR = pathlib.Path(__file__).resolve().parents[1]
+sys.path.append(str(BASE_DIR))
 
 from database.db import get_connection
 
