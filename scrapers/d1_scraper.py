@@ -35,28 +35,35 @@ def _extract_product_links_from_html(
 
     for link in css(page, "a.containerCard"):
         href = css(link, "::attr(href)").get()
-
-        if not href:
-            continue
-
-        absolute_url = urljoin(base_url, href)
-
-        if absolute_url in seen_urls:
-            continue
-
-        seen_urls.add(absolute_url)
-
         title = (
             css(link, "h3[data-testid='card-name']::text").get()
             or css(link, "img::attr(alt)").get()
             or ""
         ).strip()
+        image = css(link, "img::attr(src)").get()
+
+        print(
+            "D1 card link debug -> "
+            f"nombre={title or None} | precio=None | url={href or None} | imagen={image or None}"
+        )
+
+        if not href:
+            print("D1 card discarded -> reason=missing href")
+            continue
+
+        absolute_url = urljoin(base_url, href)
+
+        if absolute_url in seen_urls:
+            print(f"D1 card discarded -> reason=duplicate url | url={absolute_url}")
+            continue
+
+        seen_urls.add(absolute_url)
 
         fallback_products.append(
             {
                 "name": title or None,
                 "url": absolute_url,
-                "image": None,
+                "image": image,
                 "seller": "D1",
                 "price": None,
                 "quantity": None,
@@ -86,34 +93,49 @@ def _extract_products_from_cards(
 
     for card in cards:
         href = css(card, "a.containerCard::attr(href)").get()
+        raw_name = (
+            css(card, "h3[data-testid='card-name']::text").get()
+            or css(card, "img::attr(alt)").get()
+            or ""
+        ).strip()
+        image = css(
+            card,
+            "img[class*='prod__figure__img']::attr(src)",
+        ).get()
+        current_price_text = css(
+            card,
+            "p[data-testid='card-base-price']::text",
+        ).get()
+
+        print(
+            "D1 card debug -> "
+            f"nombre={raw_name or None} | precio={current_price_text or None} | url={href or None} | imagen={image or None}"
+        )
 
         if not href:
+            print("D1 card discarded -> reason=missing href")
             continue
 
         absolute_url = urljoin(base_url, href)
 
         if absolute_url in seen_urls:
+            print(f"D1 card discarded -> reason=duplicate url | url={absolute_url}")
             continue
 
         seen_urls.add(absolute_url)
 
-        name = (
-            css(card, "h3[data-testid='card-name']::text").get()
-            or css(card, "img::attr(alt)").get()
-            or ""
-        ).strip() or None
+        name = raw_name or None
+
+        if not name:
+            print(f"D1 card discarded -> reason=missing name | url={absolute_url}")
+            continue
 
         quantity, unit, clean_name = extract_quantity(name or "")
+        price = extract_first_number(current_price_text)
 
-        image = css(
-            card,
-            "img[class*='prod__figure__img']::attr(src)",
-        ).get()
-
-        current_price_text = css(
-            card,
-            "p[data-testid='card-base-price']::text",
-        ).get()
+        if price is None:
+            print(f"D1 card discarded -> reason=missing price | url={absolute_url} | name={clean_name}")
+            continue
 
         products.append(
             {
@@ -121,7 +143,7 @@ def _extract_products_from_cards(
                 "url": absolute_url,
                 "image": image,
                 "seller": "D1",
-                "price": extract_first_number(current_price_text),
+                "price": price,
                 "quantity": quantity,
                 "unit": unit,
                 "original_price": None,
@@ -165,6 +187,13 @@ def scrape_d1(
             )
 
             print(f"Productos encontrados desde JSON-LD: {len(products)}")
+
+            if products:
+                for product in products:
+                    print(
+                        "D1 product debug -> "
+                        f"nombre={product.get('name')} | precio={product.get('price')} | url={product.get('url')} | imagen={product.get('image')}"
+                    )
 
             if not products:
                 products = _extract_products_from_cards(
