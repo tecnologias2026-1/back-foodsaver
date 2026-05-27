@@ -12,7 +12,7 @@ INGREDIENTS = [
     {"ingredient": "arroz", "search": "arroz blanco"},
     {"ingredient": "pimenton", "search": "pimenton"},
     {"ingredient": "cebolla", "search": "cebolla"},
-    {"ingredient": "pechuga", "search": "pechuga pollo"},
+    {"ingredient": "pechuga", "search": "pechuga"},
     {"ingredient": "arveja", "search": "arveja"},
     {"ingredient": "condimento", "search": "condimento completo"},
     {"ingredient": "ajo", "search": "ajo malla"},
@@ -22,6 +22,21 @@ SCRAPERS = [
     "scrapers.exito_scraper",
     "scrapers.jumbo_scraper",
 ]
+
+
+def cleanup_data_files() -> None:
+    data_dir = ROOT_DIR / "data"
+
+    if not data_dir.exists():
+        return
+
+    removed_files = 0
+
+    for json_file in data_dir.glob("*.json"):
+        json_file.unlink(missing_ok=True)
+        removed_files += 1
+
+    print(f"Limpieza previa completada: {removed_files} archivos JSON eliminados")
 
 
 def run_command(command: list[str], description: str) -> subprocess.CompletedProcess[str]:
@@ -59,6 +74,8 @@ def extract_imported_count(output: str) -> int | None:
 def main() -> None:
     print("Iniciando actualización centralizada de productos...")
     print(f"Directorio raíz: {ROOT_DIR}")
+
+    cleanup_data_files()
 
     for item in INGREDIENTS:
         ingredient = item["ingredient"]
