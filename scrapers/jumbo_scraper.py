@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 from typing import Any
-from urllib.parse import quote_plus, urljoin
+from urllib.parse import quote, urljoin
 
 from utils.jsonld_utils import extract_products_from_jsonld
 from utils.product_utils import extract_quantity
@@ -18,7 +18,7 @@ TARGET_URL = "https://www.jumbocolombia.com/"
 
 
 def _build_search_urls(search: str) -> list[str]:
-    encoded = quote_plus(search.strip())
+    encoded = quote(search.strip(), safe="")
 
     return [
         f"https://www.jumbocolombia.com/{encoded}?_q={encoded}&map=ft&order=OrderByPriceASC",
@@ -212,6 +212,13 @@ def _parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
+        "--ingredient",
+        type=str,
+        default=None,
+        help="Clean ingredient category to store in the JSON output",
+    )
+
+    parser.add_argument(
         "--max-items",
         type=int,
         default=5,
@@ -223,6 +230,7 @@ def _parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = _parse_args()
+    ingredient = (args.ingredient or args.search or "").strip() or None
 
     data, source_url = scrape_jumbo(
         search=args.search,
@@ -231,7 +239,13 @@ def main() -> None:
 
     print(f"Collected {len(data)} product records from {source_url}")
 
-    if args.search:
+    if ingredient:
+        for product in data:
+            product["ingredient"] = ingredient
+
+        slug = "_".join(ingredient.lower().split())
+        output_file = f"data/jumbo_{slug}_products.json"
+    elif args.search:
         slug = "_".join(args.search.lower().split())
         output_file = f"data/jumbo_{slug}_products.json"
     else:

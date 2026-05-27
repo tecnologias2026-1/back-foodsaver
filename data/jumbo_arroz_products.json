@@ -34,5 +34,29 @@
     "original_price": null,
     "discount_percent": null,
     "source": "json-ld-jumbo"
+  },
+  {
+    "name": "Arroz Cuisine &amp; Co Blanco",
+    "url": "https://www.jumbocolombia.com/arroz-cuisine-and-co-blanco-x500grs-3650928/p",
+    "image": "https://jumbocolombiaio.vtexassets.com/arquivos/ids/773862/7703616323206-1.jpg.jpg?v=638785021186700000",
+    "seller": "Jumbo",
+    "price": 2200,
+    "quantity": "500",
+    "unit": "GRS",
+    "original_price": null,
+    "discount_percent": null,
+    "source": "json-ld-jumbo"
+  },
+  {
+    "name": "Arroz Roa",
+    "url": "https://www.jumbocolombia.com/arroz-roa-x-500-g/p",
+    "image": "https://jumbocolombiaio.vtexassets.com/arquivos/ids/901023/7702552000097-1.jpg?v=639102271641930000",
+    "seller": "Jumbo",
+    "price": 2510,
+    "quantity": "500",
+    "unit": "G",
+    "original_price": null,
+    "discount_percent": null,
+    "source": "json-ld-jumbo"
   }
 ]

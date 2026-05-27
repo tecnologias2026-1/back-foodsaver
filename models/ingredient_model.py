@@ -42,11 +42,12 @@ def create_ingredient(nombre: str, imagen: str, precio, tienda: str, url: str, i
                     (nombre, imagen, precio, tienda, url, ingrediente) 
                     VALUES (%s, %s, %s, %s, %s, %s)
 
-                    ON CONFLICT (url) DO UPDATE SET
+                    ON CONFLICT (ingrediente, tienda) DO UPDATE SET
                         nombre = EXCLUDED.nombre,
                         imagen = EXCLUDED.imagen,
                         precio = EXCLUDED.precio,
                         tienda = EXCLUDED.tienda,
+                        url = EXCLUDED.url,
                         ingrediente = EXCLUDED.ingrediente,
                         fecha = NOW()
 
