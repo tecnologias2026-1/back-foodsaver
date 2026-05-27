@@ -6,6 +6,7 @@ from models.ingredient_model import (
     create_ingredient,
     delete_ingredient,
     get_all_ingredients,
+    get_ingredients_by_name,
     update_ingredient,
 )
 
@@ -17,6 +18,7 @@ def validate_payload(data):
     precio = data.get("precio")
     tienda = str(data.get("tienda", "")).strip()
     url = str(data.get("url", "")).strip()
+    ingrediente = str(data.get("ingrediente", "")).strip()
 
     if not nombre:
         return None, "nombre is required"
@@ -27,6 +29,7 @@ def validate_payload(data):
         "precio": precio,
         "tienda": tienda,
         "url": url,
+        "ingrediente": ingrediente or None,
     }, None
 
 
@@ -47,6 +50,7 @@ def create_ingredient_handler():
         payload["precio"],
         payload["tienda"],
         payload["url"],
+        payload["ingrediente"],
     )
 
     return jsonify(new_ingredient), 201
@@ -68,6 +72,7 @@ def update_ingredient_handler(ingredient_id: int):
         payload["precio"],
         payload["tienda"],
         payload["url"],
+        payload["ingrediente"],
     )
 
     if not updated:
@@ -86,3 +91,13 @@ def delete_ingredient_handler(ingredient_id: int):
         return jsonify({"error": "ingredient not found"}), 404
 
     return "", 204
+
+
+def list_ingredients_by_name(ingrediente: str):
+    ingrediente = str(ingrediente).strip()
+
+    if not ingrediente:
+        return jsonify({"error": "ingrediente is required"}), 400
+
+    ingredients = get_ingredients_by_name(ingrediente)
+    return jsonify(ingredients), 200

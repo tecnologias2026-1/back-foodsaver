@@ -12,18 +12,6 @@
     "source": "html-card-exito"
   },
   {
-    "name": "Arroz GOLONDRINA blanco",
-    "url": "https://www.exito.com/arroz-golondrina-blanco-450-gr-3193795/p",
-    "image": "https://exitocol.vtexassets.com/arquivos/ids/33161856-300-auto/Arroz-GOLONDRINA-Blanco-450-gr-3630104_a.jpg?v=639124053941530000",
-    "seller": "Exito",
-    "price": "1.310",
-    "quantity": "450",
-    "unit": "GR",
-    "original_price": "1.760",
-    "discount_percent": "25",
-    "source": "html-card-exito"
-  },
-  {
     "name": "Cereal CAROLINA arroz achocolatado",
     "url": "https://www.exito.com/cereal-arroz-achocolatado-carolina-70-gr-3113117/p",
     "image": "https://exitocol.vtexassets.com/arquivos/ids/33173276-300-auto/Cereal-Arroz-Achocolatado-CAROLINA-70-gr-3353530_a.jpg?v=639124909822530000",
@@ -33,6 +21,42 @@
     "unit": "GR",
     "original_price": null,
     "discount_percent": null,
+    "source": "html-card-exito"
+  },
+  {
+    "name": "Maíz FRESCAMPO blanco",
+    "url": "https://www.exito.com/maiz-trillado-blanco-x-500-gr-857000/p",
+    "image": "https://exitocol.vtexassets.com/arquivos/ids/29844909-300-auto/Maiz-Trillado-Blanco-X-500-gr-1165838_a.jpg?v=638920075980900000",
+    "seller": "Exito",
+    "price": "1.390",
+    "quantity": "500",
+    "unit": "GR",
+    "original_price": null,
+    "discount_percent": null,
+    "source": "html-card-exito"
+  },
+  {
+    "name": "Arroz FRESCAMPO blanco",
+    "url": "https://www.exito.com/arroz-blanco-frescampo-454-gr-3064268/p",
+    "image": "https://exitocol.vtexassets.com/arquivos/ids/28958963-300-auto/Arroz-Blanco-FRESCAMPO-454-gr-3181790_a.jpg?v=638864603358570000",
+    "seller": "Exito",
+    "price": "1.400",
+    "quantity": "454",
+    "unit": "GR",
+    "original_price": null,
+    "discount_percent": null,
+    "source": "html-card-exito"
+  },
+  {
+    "name": "Maíz FRESCAMPO cáscara",
+    "url": "https://www.exito.com/maiz-cascara-amarillo-x-500-gr-857002/p",
+    "image": "https://exitocol.vtexassets.com/arquivos/ids/29471628-300-auto/Maiz-Cascara-Amarillo-X-500-gr-1165840_a.jpg?v=638894980853570000",
+    "seller": "Exito",
+    "price": "1.500",
+    "quantity": "500",
+    "unit": "GR",
+    "original_price": "1.680",
+    "discount_percent": "10",
     "source": "html-card-exito"
   }
 ]
