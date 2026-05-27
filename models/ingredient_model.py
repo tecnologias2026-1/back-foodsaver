@@ -46,9 +46,7 @@ def create_ingredient(nombre: str, imagen: str, precio, tienda: str, url: str, i
                         nombre = EXCLUDED.nombre,
                         imagen = EXCLUDED.imagen,
                         precio = EXCLUDED.precio,
-                        tienda = EXCLUDED.tienda,
                         url = EXCLUDED.url,
-                        ingrediente = EXCLUDED.ingrediente,
                         fecha = NOW()
 
                     RETURNING id, nombre, imagen, precio, tienda, url, ingrediente, fecha
