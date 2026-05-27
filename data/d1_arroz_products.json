@@ -9,7 +9,8 @@
     "unit": "G",
     "original_price": null,
     "discount_percent": null,
-    "source": "html-card-d1"
+    "source": "html-card-d1",
+    "ingredient": "arroz"
   },
   {
     "name": "ARROZ ESTÁNDAR ALBAR",
@@ -21,7 +22,8 @@
     "unit": "G",
     "original_price": null,
     "discount_percent": null,
-    "source": "html-card-d1"
+    "source": "html-card-d1",
+    "ingredient": "arroz"
   },
   {
     "name": "ARROZ ACHOCOLATADO FIOCCO",
@@ -33,7 +35,8 @@
     "unit": "G",
     "original_price": null,
     "discount_percent": null,
-    "source": "html-card-d1"
+    "source": "html-card-d1",
+    "ingredient": "arroz"
   },
   {
     "name": "ARROZ SABOR A COCO DIANA",
@@ -45,7 +48,8 @@
     "unit": "G",
     "original_price": null,
     "discount_percent": null,
-    "source": "html-card-d1"
+    "source": "html-card-d1",
+    "ingredient": "arroz"
   },
   {
     "name": "ARROZ ECONÓMICO ALBAR",
@@ -57,6 +61,7 @@
     "unit": "GRS",
     "original_price": null,
     "discount_percent": null,
-    "source": "html-card-d1"
+    "source": "html-card-d1",
+    "ingredient": "arroz"
   }
 ]
