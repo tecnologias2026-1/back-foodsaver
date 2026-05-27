@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS public.ingredientes_scraper (
   precio NUMERIC NOT NULL,
   tienda TEXT NOT NULL,
   url TEXT NOT NULL UNIQUE,
+  ingrediente TEXT,
 
   fecha TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );

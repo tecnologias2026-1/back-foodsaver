@@ -24,11 +24,27 @@ def normalize_price(price):
     return int(str(price).replace(".", ""))
 
 
+def detect_ingredient_from_filename(file_path: Path) -> str | None:
+    stem = file_path.stem
+
+    if stem.endswith("_products"):
+        stem = stem[: -len("_products")]
+
+    parts = stem.split("_", 1)
+
+    if len(parts) != 2:
+        return None
+
+    ingredient = parts[1].strip()
+    return ingredient or None
+
+
 def import_products():
     total = 0
 
     for file_path in DATA_DIR.glob("*.json"):
         print(f"Procesando archivo: {file_path.name}")
+        ingredient = detect_ingredient_from_filename(file_path)
 
         with open(file_path, "r", encoding="utf-8") as file:
             products = json.load(file)
@@ -47,6 +63,7 @@ def import_products():
                 precio=normalize_price(product.get("price")),
                 tienda=product.get("seller"),
                 url=product.get("url"),
+                ingrediente=ingredient,
             )
 
             total += 1
