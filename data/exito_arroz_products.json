@@ -9,19 +9,8 @@
     "unit": "GR",
     "original_price": null,
     "discount_percent": null,
-    "source": "html-card-exito"
-  },
-  {
-    "name": "Cereal CAROLINA arroz achocolatado",
-    "url": "https://www.exito.com/cereal-arroz-achocolatado-carolina-70-gr-3113117/p",
-    "image": "https://exitocol.vtexassets.com/arquivos/ids/33549897-300-auto/Cereal-Arroz-Achocolatado-CAROLINA-70-gr-3353530_a.jpg?v=639154849842770000",
-    "seller": "Exito",
-    "price": "1.350",
-    "quantity": "70",
-    "unit": "GR",
-    "original_price": null,
-    "discount_percent": "10",
-    "source": "html-card-exito"
+    "source": "html-card-exito",
+    "ingredient": "arroz"
   },
   {
     "name": "Maíz FRESCAMPO blanco",
@@ -33,7 +22,8 @@
     "unit": "GR",
     "original_price": null,
     "discount_percent": null,
-    "source": "html-card-exito"
+    "source": "html-card-exito",
+    "ingredient": "arroz"
   },
   {
     "name": "Arroz FRESCAMPO blanco",
@@ -45,18 +35,33 @@
     "unit": "GR",
     "original_price": null,
     "discount_percent": null,
-    "source": "html-card-exito"
+    "source": "html-card-exito",
+    "ingredient": "arroz"
   },
   {
-    "name": "Maíz FRESCAMPO cáscara",
-    "url": "https://www.exito.com/maiz-cascara-amarillo-x-500-gr-857002/p",
-    "image": "https://exitocol.vtexassets.com/arquivos/ids/33535786-300-auto/Maiz-Cascara-Amarillo-X-500-gr-1165840_a.jpg?v=639154388456330000",
+    "name": "Arroz EXITO MARCA PROPIA blanco",
+    "url": "https://www.exito.com/arroz-blanco-exito-marca-propia-500-gr-3064267/p",
+    "image": "https://exitocol.vtexassets.com/arquivos/ids/28958476-300-auto/Arroz-Blanco-EXITO-MARCA-PROPIA-500-gr-3181789_a.jpg?v=638864531199800000",
     "seller": "Exito",
-    "price": "1.500",
+    "price": "1.550",
     "quantity": "500",
     "unit": "GR",
-    "original_price": "1.680",
-    "discount_percent": "10",
-    "source": "html-card-exito"
+    "original_price": null,
+    "discount_percent": null,
+    "source": "html-card-exito",
+    "ingredient": "arroz"
+  },
+  {
+    "name": "Arroz SUPREMO blanco",
+    "url": "https://www.exito.com/arroz-supremo-supremo-arroz-blanco-450-gr-3189134/p",
+    "image": "https://exitocol.vtexassets.com/arquivos/ids/33161847-300-auto/Arroz-Supremo-SUPREMO-Arroz-Blanco-450-gr-3616672_a.jpg?v=639124053899670000",
+    "seller": "Exito",
+    "price": "1.800",
+    "quantity": "450",
+    "unit": "GR",
+    "original_price": null,
+    "discount_percent": null,
+    "source": "html-card-exito",
+    "ingredient": "arroz"
   }
 ]
