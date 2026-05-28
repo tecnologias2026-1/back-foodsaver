@@ -17,43 +17,6 @@ from utils.scraper_utils import (
 TARGET_URL = "https://d1.com.co/"
 
 
-def _page_text(page: Any) -> str:
-    parts: list[str] = []
-
-    for selector in ("body::text", "html::text"):
-        try:
-            values = css(page, selector).getall()
-        except Exception:
-            continue
-
-        for value in values:
-            if value:
-                cleaned_value = str(value).strip()
-
-                if cleaned_value:
-                    parts.append(cleaned_value)
-
-    return " ".join(parts).strip().lower()
-
-
-def _looks_blocked_or_broken(page_text: str) -> bool:
-    if len(page_text) < 80:
-        return True
-
-    blocked_signals = (
-        "captcha",
-        "access denied",
-        "forbidden",
-        "blocked",
-        "verify you are human",
-        "unusual traffic",
-        "robot",
-        "enable javascript",
-    )
-
-    return any(signal in page_text for signal in blocked_signals)
-
-
 def _build_search_urls(search: str) -> list[str]:
     encoded = quote(search.strip(), safe="")
 
@@ -121,7 +84,7 @@ def _extract_products_from_cards(
     page: Any,
     base_url: str,
     limit: int,
-) -> tuple[list[dict[str, Any]], int]:
+) -> list[dict[str, Any]]:
     products: list[dict[str, Any]] = []
     seen_urls: set[str] = set()
 
@@ -192,7 +155,7 @@ def _extract_products_from_cards(
         if len(products) >= limit:
             break
 
-    return products, len(cards)
+    return products
 
 
 def scrape_d1(
@@ -202,24 +165,11 @@ def scrape_d1(
     """Scrape D1 products; optionally target search result pages."""
     
     urls = _build_search_urls(search) if search else [TARGET_URL]
-    search_label = search or "esta búsqueda"
-    found_any_page = False
 
     for url in urls:
         pages = get_candidate_pages(url)
 
-        if not pages:
-            continue
-
         for page in pages:
-            found_any_page = True
-            page_text = _page_text(page)
-
-            if _looks_blocked_or_broken(page_text):
-                raise RuntimeError(
-                    f"D1 page blocked, empty, or too short for {search_label}"
-                )
-
             raw_json_blocks = css(
                 page,
                 "script[type='application/ld+json']::text",
@@ -246,16 +196,11 @@ def scrape_d1(
                     )
 
             if not products:
-                products, cards_found = _extract_products_from_cards(
+                products = _extract_products_from_cards(
                     page,
                     url,
                     limit=max_items,
                 )
-
-                if cards_found > 0 and not products:
-                    raise RuntimeError(
-                        f"D1 structure looks broken for {search_label}: cards found but no valid products"
-                    )
 
             if not products:
                 products = _extract_product_links_from_html(
@@ -264,20 +209,12 @@ def scrape_d1(
                     limit=max_items,
                 )
 
-            valid_products = [product for product in products if product.get("price") is not None]
-
-            if valid_products:
-                return valid_products[:max_items], url
-
             if products:
-                print(f"No se encontraron productos para {search_label} en D1")
-                return [], url
+                return products[:max_items], url
 
-    if found_any_page:
-        print(f"No se encontraron productos para {search_label} en D1")
-        return [], urls[0] if urls else TARGET_URL
-
-    raise RuntimeError(f"Could not load any candidate pages for D1 search={search_label}")
+    raise RuntimeError(
+        "Could not extract products from D1 with the current strategy"
+    )
 
 
 def _parse_args() -> argparse.Namespace:
@@ -317,9 +254,6 @@ def main() -> None:
         search=args.search,
         max_items=args.max_items,
     )
-
-    if not data:
-        print(f"No se encontraron productos para {args.search or 'esta búsqueda'} en D1")
 
     print(f"Collected {len(data)} product records from {source_url}")
 

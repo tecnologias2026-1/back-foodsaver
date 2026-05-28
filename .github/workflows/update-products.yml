@@ -5,6 +5,10 @@ on:
     - cron: "2-59/15 * * * *"
   workflow_dispatch:
 
+concurrency:
+  group: update-products
+  cancel-in-progress: true
+
 jobs:
   update-products:
     runs-on: ubuntu-latest
@@ -28,7 +32,7 @@ jobs:
         run: python -m playwright install --with-deps chromium || python -m patchright install --with-deps chromium
 
       - name: Ensure database schema
-        run: python database/init_schema.py
+        run: python -m database.init_schema
 
       - name: Run product update job
         run: python jobs/update_products.py
