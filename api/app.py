@@ -2,6 +2,7 @@ import os
 
 from dotenv import load_dotenv
 from flask import Flask, jsonify
+from flask_cors import CORS
 
 from routes.ingredient_routes import ingredient_bp
 
@@ -11,6 +12,16 @@ load_dotenv()
 
 def create_app() -> Flask:
     app = Flask(__name__)
+    cors_origins = [
+        origin.strip()
+        for origin in os.getenv(
+            "CORS_ORIGINS",
+            "https://tecnologias2026-1.github.io,http://localhost:5173,http://127.0.0.1:5173",
+        ).split(",")
+        if origin.strip()
+    ]
+
+    CORS(app, resources={r"/api/*": {"origins": cors_origins}})
 
     app.register_blueprint(ingredient_bp, url_prefix="/api/ingredients")
 
