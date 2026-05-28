@@ -18,6 +18,43 @@ from utils.scraper_utils import (
 TARGET_URL = "https://www.exito.com/"
 
 
+def _page_text(page: Any) -> str:
+    parts: list[str] = []
+
+    for selector in ("body::text", "html::text"):
+        try:
+            values = css(page, selector).getall()
+        except Exception:
+            continue
+
+        for value in values:
+            if value:
+                cleaned_value = str(value).strip()
+
+                if cleaned_value:
+                    parts.append(cleaned_value)
+
+    return " ".join(parts).strip().lower()
+
+
+def _looks_blocked_or_broken(page_text: str) -> bool:
+    if len(page_text) < 80:
+        return True
+
+    blocked_signals = (
+        "captcha",
+        "access denied",
+        "forbidden",
+        "blocked",
+        "verify you are human",
+        "unusual traffic",
+        "robot",
+        "enable javascript",
+    )
+
+    return any(signal in page_text for signal in blocked_signals)
+
+
 # Recibe un término de búsqueda, lo codifica para URL
 # y genera varias URLs de búsqueda en Exito que podrían contener
 # los productos relacionados con ese término.
@@ -97,7 +134,7 @@ def _extract_products_from_cards(
     page: Any,
     base_url: str,
     limit: int,
-) -> list[dict[str, Any]]:
+) -> tuple[list[dict[str, Any]], int]:
     
     products: list[dict[str, Any]] = []
     seen_urls: set[str] = set()
@@ -187,7 +224,7 @@ def _extract_products_from_cards(
         if len(products) >= limit:
             break
 
-    return products
+    return products, len(cards)
 
 
 def scrape_exito(
@@ -197,11 +234,23 @@ def scrape_exito(
     """Scrape Exito products; optionally target search result pages."""
 
     urls = _build_search_urls(search) if search else [TARGET_URL]
+    search_label = search or "esta búsqueda"
+    found_any_page = False
 
     for url in urls:
         pages = get_candidate_pages(url)
 
+        if not pages:
+            continue
+
         for page in pages:
+            found_any_page = True
+            page_text = _page_text(page)
+
+            if _looks_blocked_or_broken(page_text):
+                raise RuntimeError(
+                    f"Exito page blocked, empty, or too short for {search_label}"
+                )
             
             # Con JSON-LD primero
             raw_json_blocks = css(
@@ -232,11 +281,16 @@ def scrape_exito(
 
             # Busca las cards visibles del HTML, como los <article> de productos.
             if not products:
-                products = _extract_products_from_cards(
+                products, cards_found = _extract_products_from_cards(
                     page,
                     url,
                     limit=max_items,
                 )
+
+                if cards_found > 0 and not products:
+                    raise RuntimeError(
+                        f"Exito structure looks broken for {search_label}: cards found but no valid products"
+                    )
 
 
             # Rescata al menos links de productos, aunque tengan menos información.
@@ -247,10 +301,20 @@ def scrape_exito(
                     limit=max_items,
                 )
 
-            if products:
-                return products[:max_items], url
+            valid_products = [product for product in products if product.get("price") is not None]
 
-    raise RuntimeError("Could not extract products from Exito with the current strategy")
+            if valid_products:
+                return valid_products[:max_items], url
+
+            if products:
+                print(f"No se encontraron productos para {search_label} en Exito")
+                return [], url
+
+    if found_any_page:
+        print(f"No se encontraron productos para {search_label} en Exito")
+        return [], urls[0] if urls else TARGET_URL
+
+    raise RuntimeError(f"Could not load any candidate pages for Exito search={search_label}")
 
 
 def _parse_args() -> argparse.Namespace:
@@ -295,6 +359,9 @@ def main() -> None:
         search=args.search,
         max_items=args.max_items,
     )
+
+    if not data:
+        print(f"No se encontraron productos para {args.search or 'esta búsqueda'} en Exito")
 
     print(f"Collected {len(data)} product records from {source_url}")
 
