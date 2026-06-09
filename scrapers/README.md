@@ -1,60 +1,100 @@
-# Scrapling sample (Python)
+# Scrapers FoodSaver (Python)
 
-This project is a minimal web scraping example based on the Scrapling framework:
-https://github.com/D4Vinci/Scrapling
+Colección de scrapers utilizados para extraer información de productos de supermercados colombianos y generar los datos consumidos por el backend de FoodSaver.
 
-It scrapes product-like data from:
-https://www.exito.com/
+Fuentes actualmente soportadas:
 
-## 1) Create and activate a virtual environment (Windows PowerShell)
+* Éxito
+* Jumbo
+* D1
+
+## 1) Crear y activar un entorno virtual (Windows PowerShell)
 
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 ```
 
-## 2) Install dependencies
+## 2) Instalar dependencias
 
 ```powershell
 pip install -r requirements.txt
 ```
 
-## 3) Install Playwright browsers
+## 3) Instalar navegadores de Playwright
 
-This scraper uses `StealthyFetcher` for dynamic JavaScript rendering.
+Algunos scrapers requieren automatización de navegador y renderizado de JavaScript.
 
-Install Playwright browsers with:
+Instala los navegadores con:
 
 ```powershell
 python -m playwright install
 ```
 
+## 4) Ejecutar un scraper
 
-## 4) Run the scraper
-
-```powershell
-python sample_scrapling.py
-```
-
-Search for a specific product (example: banano):
+### Éxito
 
 ```powershell
 python -m scrapers.exito_scraper --search arroz
 ```
 
-Control number of results:
+### Jumbo
+
+```powershell
+python -m scrapers.jumbo_scraper --search arroz
+```
+
+### D1
+
+```powershell
+python -m scrapers.d1_scraper --search arroz
+```
+
+Controlar la cantidad de resultados:
 
 ```powershell
 python -m scrapers.exito_scraper --search arroz --max-items 30
 ```
 
-Expected output:
-- Console summary with number of collected product records
-- An `exito_products.json` file with extracted data
-- If you use `--search`, output file will be `exito_<keyword>_products.json` (example: `exito_banano_products.json`)
+## Salida
 
-## Notes
+Cada scraper genera un archivo JSON con los productos recolectados.
 
-- This sample uses `Fetcher.get` (fast static HTTP scraping).
-- The script first tries structured data (`application/ld+json`) and then falls back to product links from HTML.
-- If you later need JavaScript rendering or anti-bot handling, check Scrapling `DynamicFetcher` and `StealthyFetcher` in the official docs.
+Ejemplos:
+
+```text
+exito_arroz_products.json
+jumbo_arroz_products.json
+d1_arroz_products.json
+```
+
+Cada registro contiene información como:
+
+* Nombre del producto
+* Precio
+* URL del producto
+* URL de la imagen
+* Tienda de origen
+
+## Integración con el Backend
+
+El backend puede ejecutar todos los scrapers y actualizar automáticamente la base de datos PostgreSQL mediante:
+
+```powershell
+python jobs/update_products.py
+```
+
+Este proceso:
+
+* Ejecuta los scrapers configurados
+* Recolecta información de productos
+* Genera archivos intermedios
+* Actualiza los registros en PostgreSQL
+
+## Notas
+
+* Los scrapers fueron desarrollados con fines académicos y de investigación.
+* La disponibilidad de productos y la estructura de los sitios web pueden cambiar sin previo aviso.
+* Algunas fuentes requieren renderizado de JavaScript mediante Playwright.
+* Si un scraper deja de funcionar, se recomienda revisar la estructura del sitio objetivo antes de actualizar los selectores.
